@@ -26,6 +26,7 @@ import { getCodebaseSearchDescription } from "./codebase-search"
 import { getUpdateTodoListDescription } from "./update-todo-list"
 import { getRunSlashCommandDescription } from "./run-slash-command"
 import { getGenerateImageDescription } from "./generate-image"
+import { getSpawnParallelInstanceDescription } from "./spawn-parallel-instance"
 import { CodeIndexManager } from "../../../services/code-index/manager"
 
 // Map of tool names to their description functions
@@ -58,6 +59,7 @@ const toolDescriptionMap: Record<string, (args: ToolArgs) => string | undefined>
 	update_todo_list: (args) => getUpdateTodoListDescription(args),
 	run_slash_command: () => getRunSlashCommandDescription(),
 	generate_image: (args) => getGenerateImageDescription(args),
+	spawn_parallel_instance: (args) => getSpawnParallelInstanceDescription(args),
 }
 
 export function getToolDescriptionsForMode(
@@ -177,4 +179,5 @@ export {
 	getCodebaseSearchDescription,
 	getRunSlashCommandDescription,
 	getGenerateImageDescription,
+	getSpawnParallelInstanceDescription,
 }

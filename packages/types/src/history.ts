@@ -19,6 +19,12 @@ export const historyItemSchema = z.object({
 	size: z.number().optional(),
 	workspace: z.string().optional(),
 	mode: z.string().optional(),
+	/** Flag indicating this task is part of parallel execution */
+	parallelExecution: z.boolean().optional(),
+	/** Workspace subdirectory assigned to this worker */
+	workingDirectory: z.string().optional(),
+	/** Worker specialization type (orchestrator, worker, reviewer) */
+	workerType: z.string().optional(),
 })
 
 export type HistoryItem = z.infer<typeof historyItemSchema>

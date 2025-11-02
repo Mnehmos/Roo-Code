@@ -62,6 +62,10 @@ export const toolParamNames = [
 	"todos",
 	"prompt",
 	"image",
+	"taskId",
+	"workspacePath",
+	"systemPrompt",
+	"mcpServers",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]
@@ -165,6 +169,11 @@ export interface GenerateImageToolUse extends ToolUse {
 	params: Partial<Pick<Record<ToolParamName, string>, "prompt" | "path" | "image">>
 }
 
+export interface SpawnParallelInstanceToolUse extends ToolUse {
+	name: "spawn_parallel_instance"
+	params: Partial<Pick<Record<ToolParamName, string>, "taskId" | "workspacePath" | "systemPrompt" | "mcpServers">>
+}
+
 // Define tool group configuration
 export type ToolGroupConfig = {
 	tools: readonly string[]
@@ -192,6 +201,7 @@ export const TOOL_DISPLAY_NAMES: Record<ToolName, string> = {
 	update_todo_list: "update todo list",
 	run_slash_command: "run slash command",
 	generate_image: "generate images",
+	spawn_parallel_instance: "spawn parallel workers",
 } as const
 
 // Define available tool groups.
@@ -219,7 +229,7 @@ export const TOOL_GROUPS: Record<ToolGroup, ToolGroupConfig> = {
 		tools: ["use_mcp_tool", "access_mcp_resource"],
 	},
 	modes: {
-		tools: ["switch_mode", "new_task"],
+		tools: ["switch_mode", "new_task", "spawn_parallel_instance"],
 		alwaysAvailable: true,
 	},
 }

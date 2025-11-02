@@ -143,6 +143,12 @@ export interface TaskOptions extends CreateTaskOptions {
 	onCreated?: (task: Task) => void
 	initialTodos?: TodoItem[]
 	workspacePath?: string
+	/** Flag indicating this task is part of parallel execution */
+	parallelExecution?: boolean
+	/** Workspace subdirectory assigned to this worker */
+	workingDirectory?: string
+	/** Worker specialization type (orchestrator, worker, reviewer) */
+	workerType?: string
 }
 
 export class Task extends EventEmitter<TaskEvents> implements TaskLike {
@@ -160,6 +166,13 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 	readonly parentTask: Task | undefined = undefined
 	readonly taskNumber: number
 	readonly workspacePath: string
+
+	/** Flag indicating this task is part of parallel execution */
+	readonly parallelExecution?: boolean
+	/** Workspace subdirectory assigned to this worker */
+	readonly workingDirectory?: string
+	/** Worker specialization type (orchestrator, worker, reviewer) */
+	readonly workerType?: string
 
 	/**
 	 * The mode associated with this task. Persisted across sessions
@@ -322,6 +335,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		onCreated,
 		initialTodos,
 		workspacePath,
+		parallelExecution,
+		workingDirectory,
+		workerType,
 	}: TaskOptions) {
 		super()
 
@@ -387,6 +403,11 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 		this.parentTask = parentTask
 		this.taskNumber = taskNumber
+
+		// Store parallel execution fields if provided
+		this.parallelExecution = parallelExecution
+		this.workingDirectory = workingDirectory
+		this.workerType = workerType
 
 		// Store the task's mode when it's created.
 		// For history items, use the stored mode; for new tasks, we'll set it
@@ -695,6 +716,9 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 				globalStoragePath: this.globalStoragePath,
 				workspace: this.cwd,
 				mode: this._taskMode || defaultModeSlug, // Use the task's own mode, not the current provider mode.
+				parallelExecution: this.parallelExecution,
+				workingDirectory: this.workingDirectory,
+				workerType: this.workerType,
 			})
 
 			if (hasTokenUsageChanged(tokenUsage, this.tokenUsageSnapshot)) {
@@ -739,6 +763,11 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		// still alive until this promise resolves or rejects.)
 		if (this.abort) {
 			throw new Error(`[RooCode#ask] task ${this.taskId}.${this.instanceId} aborted`)
+		}
+
+		// CRITICAL: Auto-approve all asks for worker instances
+		if (this.workerType === "worker") {
+			return { response: "yesButtonClicked" }
 		}
 
 		let askTs: number

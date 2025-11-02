@@ -1,0 +1,17 @@
+# Test Directory for Touch and Go Parallel Execution
+
+This directory will contain unit tests for the parallel execution components.
+
+## Test Files (to be created in Phase 4)
+
+- `ParallelInstanceManager.test.ts` - Worker spawning and lifecycle
+- `IPCChannel.test.ts` - Message routing and communication
+- `OrchestrationScheduler.test.ts` - Dependency graph and scheduling
+- `WorkspaceAnalyzer.test.ts` - Conflict detection and validation
+- `ReviewCoordinator.test.ts` - Async review workflow
+
+## Coverage Target
+
+All tests must achieve 80%+ code coverage following Roo Code standards.
+
+See [`research/test-infrastructure-analysis.md`](../../../research/test-infrastructure-analysis.md:1) for test patterns and templates.

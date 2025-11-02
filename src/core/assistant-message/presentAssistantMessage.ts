@@ -25,6 +25,7 @@ import { askFollowupQuestionTool } from "../tools/askFollowupQuestionTool"
 import { switchModeTool } from "../tools/switchModeTool"
 import { attemptCompletionTool } from "../tools/attemptCompletionTool"
 import { newTaskTool } from "../tools/newTaskTool"
+import { spawnParallelInstanceTool } from "../tools/spawnParallelInstanceTool"
 
 import { updateTodoListTool } from "../tools/updateTodoListTool"
 import { runSlashCommandTool } from "../tools/runSlashCommandTool"
@@ -224,6 +225,8 @@ export async function presentAssistantMessage(cline: Task) {
 						return `[${block.name} for '${block.params.command}'${block.params.args ? ` with args: ${block.params.args}` : ""}]`
 					case "generate_image":
 						return `[${block.name} for '${block.params.path}']`
+					case "spawn_parallel_instance":
+						return `[${block.name} for task '${block.params.taskId}' in workspace '${block.params.workspacePath}']`
 				}
 			}
 
@@ -550,6 +553,16 @@ export async function presentAssistantMessage(cline: Task) {
 					break
 				case "generate_image":
 					await generateImageTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
+					break
+				case "spawn_parallel_instance":
+					await spawnParallelInstanceTool(
+						cline,
+						block,
+						askApproval,
+						handleError,
+						pushToolResult,
+						removeClosingTag,
+					)
 					break
 			}
 

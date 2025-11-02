@@ -21,6 +21,12 @@ export type TaskMetadataOptions = {
 	globalStoragePath: string
 	workspace: string
 	mode?: string
+	/** Flag indicating this task is part of parallel execution */
+	parallelExecution?: boolean
+	/** Workspace subdirectory assigned to this worker */
+	workingDirectory?: string
+	/** Worker specialization type (orchestrator, worker, reviewer) */
+	workerType?: string
 }
 
 export async function taskMetadata({
@@ -32,6 +38,9 @@ export async function taskMetadata({
 	globalStoragePath,
 	workspace,
 	mode,
+	parallelExecution,
+	workingDirectory,
+	workerType,
 }: TaskMetadataOptions) {
 	const taskDir = await getTaskDirectoryPath(globalStoragePath, id)
 
@@ -101,6 +110,9 @@ export async function taskMetadata({
 		size: taskDirSize,
 		workspace,
 		mode,
+		parallelExecution,
+		workingDirectory,
+		workerType,
 	}
 
 	return { historyItem, tokenUsage }

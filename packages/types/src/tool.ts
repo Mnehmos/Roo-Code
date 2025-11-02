@@ -35,6 +35,7 @@ export const toolNames = [
 	"update_todo_list",
 	"run_slash_command",
 	"generate_image",
+	"spawn_parallel_instance",
 ] as const
 
 export const toolNamesSchema = z.enum(toolNames)
